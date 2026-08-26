@@ -19,17 +19,11 @@ jobs:
     - name: Install system dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y python3-pip python3-venv git zip unzip openjdk-17-jdk autoconf automake libtool pkg-config zlib1g-dev libncurses-dev cmake libffi-dev libssl-dev expect
+        sudo apt-get install -y python3-pip python3-venv git zip unzip openjdk-17-jdk autoconf automake libtool pkg-config zlib1g-dev libncurses-dev cmake libffi-dev libssl-dev
     
     - name: Install python-for-android
       run: |
         pip install python-for-android cython
-    
-    - name: Accept Android licenses
-      run: |
-        mkdir -p $ANDROID_HOME/licenses
-        echo "24333f8a63b6825ea9c5514f83c2829b004d1fee" > $ANDROID_HOME/licenses/android-sdk-license
-        echo "8933bad161af4178b1185d1a37fbf41ea5269c55" >> $ANDROID_HOME/licenses/android-sdk-license
     
     - name: Build APK with p4a
       run: |
@@ -40,10 +34,9 @@ jobs:
           --version 1.0 \
           --requirements=python3,kivy==2.3.1,sqlalchemy,arabic-reshaper,python-bidi,requests \
           --arch=arm64-v8a \
-          --android-api=30 \
+          --android-api=34 \
           --minapi=21 \
-          --bootstrap=sdl2 \
-          --window
+          --bootstrap=sdl2
     
     - name: Upload APK
       uses: actions/upload-artifact@v4

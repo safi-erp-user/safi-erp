@@ -25,12 +25,17 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y python3-pip python3-venv git zip unzip openjdk-17-jdk autoconf automake libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev cmake libffi-dev libssl-dev
     
+    - name: Accept Android SDK licenses
+      run: |
+        mkdir -p $HOME/.buildozer/android/platform/android-sdk/licenses
+        echo "24333f8a63b6825ea9c5514f83c2829b004d1fee" > $HOME/.buildozer/android/platform/android-sdk/licenses/android-sdk-license
+        echo "d56f5187479451eabf01fb78af6dfcb131a6481e" > $HOME/.buildozer/android/platform/android-sdk/licenses/android-sdk-preview-license
+        echo "8933bad161af4178b1185d1a37fbf41ea5269c55" > $HOME/.buildozer/android/platform/android-sdk/licenses/android-sdk-license
+        echo "24333f8a63b6825ea9c5514f83c2829b004d1fee" > $HOME/.buildozer/android/platform/android-sdk/licenses/android-sdk-license
+    
     - name: Build APK
       run: |
         buildozer android debug
-      env:
-        BUILDozer_ACCEPT_LICENSE: 1
-        DEBIAN_FRONTEND: noninteractive
     
     - name: Upload APK
       uses: actions/upload-artifact@v4

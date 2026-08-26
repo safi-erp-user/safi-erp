@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v4
     
@@ -21,29 +21,18 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y python3-pip python3-venv git zip unzip openjdk-17-jdk autoconf automake libtool libtool-bin pkg-config zlib1g-dev libncurses-dev cmake libffi-dev libssl-dev m4
     
-    - name: Install python-for-android
+    - name: Install buildozer
       run: |
-        pip install python-for-android==2026.5.9 cython
+        pip install buildozer cython
     
-    - name: Build APK with p4a
+    - name: Build APK
       run: |
-        p4a apk \
-          --private . \
-          --package=org.safierp.app \
-          --name "Safi ERP" \
-          --version 1.0 \
-          --requirements=python3,kivy==2.3.1,sqlalchemy,arabic-reshaper,python-bidi,requests \
-          --arch=arm64-v8a \
-          --android-api=34 \
-          --minapi=21 \
-          --bootstrap=sdl2 \
-          --ndk-api=24 \
-          --copy-libs
+        buildozer android debug
     
     - name: Upload APK
       uses: actions/upload-artifact@v4
       with:
         name: safi-erp-apk
         path: |
-          *.apk
+          bin/*.apk
           **/*.apk

@@ -23,7 +23,7 @@ jobs:
     
     - name: Install python-for-android
       run: |
-        pip install python-for-android==2025.06.07 cython
+        pip install python-for-android==2026.5.9 cython
     
     - name: Build APK with p4a
       run: |

@@ -31,13 +31,16 @@ jobs:
         spawn buildozer android debug
         expect {
             "Accept? (y/N):" { send "y\r"; exp_continue }
-            "Accept? (y/N):" { send "y\r"; exp_continue }
             eof
         }
         '
+        ls -la bin/ || true
+        find . -name "*.apk" || true
     
     - name: Upload APK
       uses: actions/upload-artifact@v4
       with:
         name: safi-erp-apk
-        path: bin/*.apk
+        path: |
+          **/*.apk
+          bin/

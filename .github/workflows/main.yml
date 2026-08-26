@@ -33,8 +33,6 @@ jobs:
     - name: Accept Android licenses
       run: |
         yes | sdkmanager --licenses || true
-      env:
-        JAVA_HOME: ${{ env.JAVA_HOME }}
     
     - name: Fix Android SDK path for Buildozer
       run: |
@@ -56,10 +54,20 @@ jobs:
         ANDROID_SDK_ROOT: /usr/local/lib/android/sdk
         ANDROID_HOME: /usr/local/lib/android/sdk
     
+    - name: Find APK files
+      run: |
+        echo "=== Searching for APK files ==="
+        find /home/runner -name "*.apk" -type f 2>/dev/null || true
+        find . -name "*.apk" -type f 2>/dev/null || true
+        echo "=== bin directory ==="
+        ls -la bin/ 2>/dev/null || true
+        echo "=== current directory ==="
+        ls -la
+    
     - name: Upload APK
       uses: actions/upload-artifact@v4
       with:
         name: safi-erp-apk
         path: |
-          bin/*.apk
           **/*.apk
+          bin/

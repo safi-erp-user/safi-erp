@@ -19,7 +19,7 @@ jobs:
     - name: Install system dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y python3-pip python3-venv git zip unzip openjdk-17-jdk autoconf automake libtool libtool-bin pkg-config zlib1g-dev libncurses-dev cmake libffi-dev libssl-dev m4
+        sudo apt-get install -y python3-pip python3-venv git zip unzip openjdk-17-jdk autoconf automake libtool libtool-bin pkg-config zlib1g-dev libncurses-dev cmake libffi-dev libssl-dev m4 expect
     
     - name: Install buildozer
       run: |
@@ -27,7 +27,14 @@ jobs:
     
     - name: Build APK
       run: |
-        buildozer android debug
+        expect -c '
+        spawn buildozer android debug
+        expect {
+            "Accept? (y/N):" { send "y\r"; exp_continue }
+            "Accept? (y/N):" { send "y\r"; exp_continue }
+            eof
+        }
+        '
     
     - name: Upload APK
       uses: actions/upload-artifact@v4

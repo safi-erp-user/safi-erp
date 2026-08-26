@@ -19,7 +19,7 @@ jobs:
     - name: Install system dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y python3-pip python3-venv git zip unzip openjdk-17-jdk autoconf automake libtool pkg-config zlib1g-dev libncurses-dev cmake libffi-dev libssl-dev libtool-bin m4
+        sudo apt-get install -y python3-pip python3-venv git zip unzip openjdk-17-jdk autoconf automake libtool libtool-bin pkg-config zlib1g-dev libncurses-dev cmake libffi-dev libssl-dev m4
     
     - name: Install python-for-android
       run: |

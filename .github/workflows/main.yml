@@ -28,6 +28,14 @@ jobs:
       run: |
         yes | sdkmanager --licenses || true
     
+    - name: Fix Android SDK path for Buildozer
+      run: |
+        SDK="${ANDROID_SDK_ROOT:-/usr/local/lib/android/sdk}"
+        mkdir -p "$SDK/tools/bin"
+        ln -sf "$SDK/cmdline-tools/latest/bin/sdkmanager" "$SDK/tools/bin/sdkmanager"
+        ln -sf "$SDK/cmdline-tools/latest/bin/avdmanager" "$SDK/tools/bin/avdmanager"
+        echo "$SDK/cmdline-tools/latest/bin" >> "$GITHUB_PATH"
+    
     - name: Install buildozer
       run: |
         pip install buildozer cython

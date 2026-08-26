@@ -1,5 +1,5 @@
 [app]
-title = مدیریت تولید صافی
+title = Safi ERP
 package.name = safierp
 package.domain = org.safierp
 source.dir = .
@@ -9,9 +9,10 @@ requirements = python3,kivy==2.3.1,sqlalchemy==2.0.23,arabic-reshaper,python-bid
 orientation = portrait
 fullscreen = 0
 android.permissions = INTERNET
-android.api = 30
+android.api = 34
 android.minapi = 21
-android.arch = arm64-v8a
+android.archs = arm64-v8a
+android.sdk_path = /usr/local/lib/android/sdk
 
 [buildozer]
 log_level = 2

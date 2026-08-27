@@ -16,7 +16,7 @@ class User(Base):
     username = Column(String(50), unique=True, nullable=False)
     password_hash = Column(String(255), nullable=False)
     full_name = Column(String(100), nullable=False)
-    role = Column(String(20), nullable=False, default='USER')  # ADMIN, USER
+    role = Column(String(20), nullable=False, default='USER')
     is_active = Column(Boolean, default=True)
     created_at = Column(DateTime, default=datetime.now)
     last_login = Column(DateTime, nullable=True)
@@ -26,9 +26,9 @@ class Fabric(Base):
     __tablename__ = 'fabrics'
 
     id = Column(String(36), primary_key=True, default=generate_uuid)
-    name = Column(String(100), nullable=False)  # نوع پارچه
-    width = Column(Float, nullable=False)  # عرض پارچه
-    current_stock = Column(Float, default=0)  # موجودی فعلی
+    name = Column(String(100), nullable=False)
+    width = Column(Float, nullable=False)
+    current_stock = Column(Float, default=0)
     created_at = Column(DateTime, default=datetime.now)
 
 
@@ -37,12 +37,12 @@ class FabricTransaction(Base):
 
     id = Column(String(36), primary_key=True, default=generate_uuid)
     fabric_id = Column(String(36), ForeignKey('fabrics.id'), nullable=False)
-    transaction_type = Column(String(20), nullable=False)  # IN, OUT, RETURN, ADJUST
+    transaction_type = Column(String(20), nullable=False)
     quantity = Column(Float, nullable=False)
     date = Column(DateTime, default=datetime.now)
-    supplier = Column(String(100))  # تحویل‌دهنده
-    receiver = Column(String(100))  # تحویل‌گیرنده
-    purpose = Column(String(200))  # مورد مصرف
+    supplier = Column(String(100))
+    receiver = Column(String(100))
+    purpose = Column(String(200))
     description = Column(Text)
     created_at = Column(DateTime, default=datetime.now)
 
@@ -53,11 +53,11 @@ class Product(Base):
     __tablename__ = 'products'
 
     id = Column(String(36), primary_key=True, default=generate_uuid)
-    name = Column(String(100), nullable=False)  # نام صافی
-    length = Column(Float)  # طول
-    width = Column(Float)  # عرض
-    consumer_part = Column(String(100))  # قسمت مصرف‌کننده
-    current_stock = Column(Integer, default=0)  # موجودی فعلی
+    name = Column(String(100), nullable=False)
+    length = Column(Float)
+    width = Column(Float)
+    consumer_part = Column(String(100))
+    current_stock = Column(Integer, default=0)
     created_at = Column(DateTime, default=datetime.now)
 
 
@@ -66,7 +66,7 @@ class ProductTransaction(Base):
 
     id = Column(String(36), primary_key=True, default=generate_uuid)
     product_id = Column(String(36), ForeignKey('products.id'), nullable=False)
-    transaction_type = Column(String(20), nullable=False)  # IN, OUT
+    transaction_type = Column(String(20), nullable=False)
     quantity = Column(Integer, nullable=False)
     date = Column(DateTime, default=datetime.now)
     description = Column(Text)
@@ -79,15 +79,15 @@ class Contract(Base):
     __tablename__ = 'contracts'
 
     id = Column(String(36), primary_key=True, default=generate_uuid)
-    filter_name = Column(String(100), nullable=False)  # نام صافی
-    length = Column(Float)  # طول
-    width = Column(Float)  # عرض
-    company_name = Column(String(100))  # نام شرکت کارفرما
-    start_date = Column(DateTime)  # تاریخ قرارداد
-    end_date = Column(DateTime)  # تاریخ پایان
-    quantity = Column(Integer)  # تعداد قرارداد
-    price_per_unit = Column(Float)  # قیمت هر صافی
-    settlement_limit = Column(Float)  # مبلغ سقف تسویه
+    filter_name = Column(String(100), nullable=False)
+    length = Column(Float)
+    width = Column(Float)
+    company_name = Column(String(100))
+    start_date = Column(DateTime)
+    end_date = Column(DateTime)
+    quantity = Column(Integer)
+    price_per_unit = Column(Float)
+    settlement_limit = Column(Float)
     description = Column(Text)
     created_at = Column(DateTime, default=datetime.now)
 
@@ -96,10 +96,10 @@ class Production(Base):
     __tablename__ = 'productions'
 
     id = Column(String(36), primary_key=True, default=generate_uuid)
-    product_name = Column(String(100), nullable=False)  # نام صافی
+    product_name = Column(String(100), nullable=False)
     contract_id = Column(String(36), ForeignKey('contracts.id'))
-    quantity = Column(Integer, nullable=False)  # تعداد تولید
-    fabric_consumed = Column(Float)  # پارچه مصرف شده
+    quantity = Column(Integer, nullable=False)
+    fabric_consumed = Column(Float)
     production_date = Column(DateTime, default=datetime.now)
     created_at = Column(DateTime, default=datetime.now)
 
@@ -112,7 +112,7 @@ class ProductionItem(Base):
     id = Column(String(36), primary_key=True, default=generate_uuid)
     production_id = Column(String(36), ForeignKey('productions.id'), nullable=False)
     fabric_id = Column(String(36), ForeignKey('fabrics.id'))
-    quantity = Column(Float)  # مقدار پارچه مصرفی
+    quantity = Column(Float)
     created_at = Column(DateTime, default=datetime.now)
 
     production = relationship('Production', backref='items')
@@ -127,7 +127,7 @@ class AccountingPeriod(Base):
     start_date = Column(DateTime, default=datetime.now)
     end_date = Column(DateTime, nullable=True)
     total_income = Column(Float, default=0)
-    settlement_limit = Column(Float)  # سقف تسویه
+    settlement_limit = Column(Float)
     is_closed = Column(Boolean, default=False)
     created_at = Column(DateTime, default=datetime.now)
 
@@ -150,7 +150,7 @@ class PersonalDebt(Base):
 
     id = Column(String(36), primary_key=True, default=generate_uuid)
     person_name = Column(String(100), nullable=False)
-    debt_type = Column(String(20), nullable=False)  # DEBT (بدهی), RECEIVABLE (طلب)
+    debt_type = Column(String(20), nullable=False)
     total_amount = Column(Float, nullable=False)
     paid_amount = Column(Float, default=0)
     due_date = Column(DateTime)
@@ -180,3 +180,28 @@ class AppSetting(Base):
     key = Column(String(100), unique=True, nullable=False)
     value = Column(String(500), nullable=False)
     updated_at = Column(DateTime, default=datetime.now, onupdate=datetime.now)
+
+
+class Note(Base):
+    __tablename__ = 'notes'
+
+    id = Column(String(36), primary_key=True, default=generate_uuid)
+    title = Column(String(200))
+    content = Column(Text, nullable=False)
+    category = Column(String(100))
+    tags = Column(String(500))
+    created_at = Column(DateTime, default=datetime.now)
+    updated_at = Column(DateTime, default=datetime.now, onupdate=datetime.now)
+
+
+class Task(Base):
+    __tablename__ = 'tasks'
+
+    id = Column(String(36), primary_key=True, default=generate_uuid)
+    title = Column(String(200), nullable=False)
+    description = Column(Text)
+    due_date = Column(DateTime)
+    due_time = Column(String(10))
+    is_done = Column(Boolean, default=False)
+    is_notified = Column(Boolean, default=False)
+    created_at = Column(DateTime, default=datetime.now)

@@ -5,7 +5,7 @@ from kivy.uix.button import Button
 from kivy.uix.scrollview import ScrollView
 from kivy.uix.gridlayout import GridLayout
 from kivy.metrics import dp
-from kivy.graphics import Color, RoundedRectangle, Rectangle
+from kivy.graphics import Color, Rectangle, RoundedRectangle
 from services.inventory_service import get_total_fabric_stock, get_total_product_stock
 from services.production_service import get_today_productions, get_productions_by_month
 from services.accounting_service import get_current_period
@@ -25,7 +25,7 @@ class DashboardScreen(Screen):
         self.clear_widgets()
 
         with self.canvas.before:
-            Color(0.95, 0.95, 0.97, 1)
+            Color(0.93, 0.95, 0.98, 1)
             self.rect = Rectangle(size=self.size, pos=self.pos)
         self.bind(size=self._update_bg, pos=self._update_bg)
 
@@ -35,7 +35,6 @@ class DashboardScreen(Screen):
             spacing=dp(10)
         )
 
-        # هدر
         header = BoxLayout(
             orientation='horizontal',
             size_hint_y=0.08,
@@ -45,7 +44,7 @@ class DashboardScreen(Screen):
         title_label = Label(
             text=reshape_text('داشبورد'),
             font_name=FONT_NAME,
-            font_size=dp(22),
+            font_size=dp(20),
             bold=True,
             color=(0.1, 0.2, 0.4, 1),
             halign='right',
@@ -66,7 +65,6 @@ class DashboardScreen(Screen):
 
         main_layout.add_widget(header)
 
-        # ScrollView
         scroll = ScrollView()
         content = BoxLayout(
             orientation='vertical',
@@ -75,163 +73,75 @@ class DashboardScreen(Screen):
         )
         content.bind(minimum_height=content.setter('height'))
 
-        # منوی دسترسی سریع
-        quick_menu = GridLayout(
-            cols=5,
-            spacing=dp(5),
+        # منوی دکمه‌ها
+        menu_grid = GridLayout(
+            cols=2,
+            spacing=dp(8),
             size_hint_y=None,
-            height=dp(50)
+            height=dp(250)
         )
 
-        quick_buttons = [
-            ('انبار', 'fabric'),
-            ('محصول', 'products'),
+        menu_items = [
+            ('ماشین حساب', 'calculator'),
+            ('انبار پارچه', 'fabric'),
+            ('انبار محصول', 'products'),
             ('قرارداد', 'contracts'),
+            ('تولید', 'production'),
             ('حسابداری', 'accounting'),
+            ('شخصی', 'personal_accounting'),
+            ('یادداشت', 'notes'),
+            ('گزارش‌ها', 'reports'),
             ('تنظیمات', 'settings'),
         ]
 
-        for text, screen_name in quick_buttons:
+        for text, screen_name in menu_items:
             btn = Button(
                 text=reshape_text(text),
                 font_name=FONT_NAME,
-                font_size=dp(11),
+                font_size=dp(14),
                 background_color=(0.1, 0.4, 0.8, 1),
                 color=(1, 1, 1, 1),
                 size_hint_y=None,
                 height=dp(45)
             )
             btn.bind(on_press=lambda x, sn=screen_name: self.go_to_screen(sn))
-            quick_menu.add_widget(btn)
+            menu_grid.add_widget(btn)
 
-        content.add_widget(quick_menu)
+        content.add_widget(menu_grid)
 
         # کارت‌های آماری
         stats_grid = GridLayout(
             cols=2,
             spacing=dp(10),
             size_hint_y=None,
-            height=dp(320)
+            height=dp(250)
         )
 
         fabric_stock = get_total_fabric_stock()
         stats_grid.add_widget(self.create_stat_card(
-            reshape_text('موجودی پارچه'),
-            reshape_text(f'{format_number(fabric_stock)} متر'),
-            (0.1, 0.5, 0.3, 1)
+            'موجودی پارچه', f'{format_number(fabric_stock)} متر', (0.1, 0.5, 0.3, 1)
         ))
 
         product_stock = get_total_product_stock()
         stats_grid.add_widget(self.create_stat_card(
-            reshape_text('موجودی محصول'),
-            reshape_text(f'{format_number(product_stock)} عدد'),
-            (0.1, 0.4, 0.8, 1)
+            'موجودی محصول', f'{format_number(product_stock)} عدد', (0.1, 0.4, 0.8, 1)
         ))
 
-        today_productions = get_today_productions()
-        today_total = sum(p.quantity for p in today_productions)
+        today_total = sum(p.quantity for p in get_today_productions())
         stats_grid.add_widget(self.create_stat_card(
-            reshape_text('تولید امروز'),
-            reshape_text(f'{format_number(today_total)} عدد'),
-            (0.8, 0.5, 0.1, 1)
-        ))
-
-        now = datetime.now()
-        month_productions = get_productions_by_month(now.year, now.month)
-        month_total = sum(p.quantity for p in month_productions)
-        stats_grid.add_widget(self.create_stat_card(
-            reshape_text('تولید این ماه'),
-            reshape_text(f'{format_number(month_total)} عدد'),
-            (0.6, 0.2, 0.4, 1)
+            'تولید امروز', f'{format_number(today_total)} عدد', (0.8, 0.5, 0.1, 1)
         ))
 
         current_period = get_current_period()
         if current_period:
             stats_grid.add_widget(self.create_stat_card(
-                reshape_text('درآمد دوره جاری'),
-                reshape_text(format_currency(current_period['total_income'])),
-                (0.1, 0.6, 0.5, 1)
+                'درآمد دوره', format_currency(current_period['total_income']), (0.1, 0.6, 0.5, 1)
             ))
-
-            if current_period['settlement_limit']:
-                remaining = current_period['settlement_limit'] - current_period['total_income']
-                stats_grid.add_widget(self.create_stat_card(
-                    reshape_text('مانده تا تسویه'),
-                    reshape_text(format_currency(remaining)),
-                    (0.7, 0.3, 0.1, 1)
-                ))
 
         content.add_widget(stats_grid)
 
-        # فعالیت‌های اخیر
-        recent_label = Label(
-            text=reshape_text('آخرین فعالیت‌ها'),
-            font_name=FONT_NAME,
-            font_size=dp(17),
-            bold=True,
-            color=(0.1, 0.2, 0.4, 1),
-            size_hint_y=None,
-            height=dp(40),
-            halign='right'
-        )
-        content.add_widget(recent_label)
-
-        activities = [
-            'ثبت تولید ۶۰ عدد صافی',
-            'ورود ۱۰۰ متر پارچه',
-            'ثبت قرارداد جدید',
-            'تسویه دوره مالی'
-        ]
-
-        for activity in activities:
-            activity_label = Label(
-                text=reshape_text(f'• {activity}'),
-                font_name=FONT_NAME,
-                font_size=dp(14),
-                color=(0.3, 0.3, 0.4, 1),
-                size_hint_y=None,
-                height=dp(35),
-                halign='right'
-            )
-            content.add_widget(activity_label)
-
         scroll.add_widget(content)
         main_layout.add_widget(scroll)
-
-        # منوی پایین
-        bottom_menu = BoxLayout(
-            orientation='horizontal',
-            size_hint_y=0.1,
-            spacing=dp(3)
-        )
-
-        menu_buttons = [
-            ('داشبورد', 'dashboard'),
-            ('ماشین حساب', 'calculator'),
-            ('انبار', 'fabric'),
-            ('محصول', 'products'),
-            ('قرارداد', 'contracts'),
-            ('تولید', 'production'),
-            ('حسابداری', 'accounting'),
-            ('شخصی', 'personal_accounting'),
-            ('گزارش', 'reports'),
-            ('تنظیمات', 'settings'),
-        ]
-
-        for text, screen_name in menu_buttons:
-            btn = Button(
-                text=reshape_text(text),
-                font_name=FONT_NAME,
-                font_size=dp(9),
-                background_color=(0.1, 0.4, 0.8, 1),
-                color=(1, 1, 1, 1),
-                size_hint_y=None,
-                height=dp(50)
-            )
-            btn.bind(on_press=lambda x, sn=screen_name: self.go_to_screen(sn))
-            bottom_menu.add_widget(btn)
-
-        main_layout.add_widget(bottom_menu)
 
         self.add_widget(main_layout)
 
@@ -253,7 +163,7 @@ class DashboardScreen(Screen):
                   size=lambda *a: self._update_card_bg(card, color))
 
         title_label = Label(
-            text=title,
+            text=reshape_text(title),
             font_name=FONT_NAME,
             font_size=dp(12),
             color=(1, 1, 1, 0.8),
@@ -262,9 +172,9 @@ class DashboardScreen(Screen):
         card.add_widget(title_label)
 
         value_label = Label(
-            text=value,
+            text=reshape_text(value),
             font_name=FONT_NAME,
-            font_size=dp(18),
+            font_size=dp(16),
             bold=True,
             color=(1, 1, 1, 1),
             halign='right'

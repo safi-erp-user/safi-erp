@@ -87,7 +87,6 @@ class LoginScreen(Screen):
 
         card.add_widget(Label(size_hint_y=None, height=dp(10)))
 
-        # نام کاربری
         username_box = BoxLayout(
             orientation='horizontal',
             size_hint_y=None,
@@ -123,7 +122,6 @@ class LoginScreen(Screen):
         username_box.add_widget(self.username_input)
         card.add_widget(username_box)
 
-        # رمز عبور
         password_box = BoxLayout(
             orientation='horizontal',
             size_hint_y=None,
@@ -161,7 +159,6 @@ class LoginScreen(Screen):
         password_box.add_widget(self.password_input)
         card.add_widget(password_box)
 
-        # تنظیم focus_next بعد از ساخت هر دو
         self.username_input.focus_next = self.password_input
 
         card.add_widget(Label(size_hint_y=None, height=dp(5)))

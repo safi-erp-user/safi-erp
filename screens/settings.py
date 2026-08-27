@@ -11,6 +11,7 @@ from database.models import AppSetting, User
 from services.auth_service import create_user, get_all_users, update_user
 from utils.validators import validate_required, validate_positive_number
 from utils.persian_text import reshape_text
+from utils.rtl_widgets import create_rtl_input, create_rtl_label
 
 FONT_NAME = 'Persian'
 
@@ -129,28 +130,21 @@ class SettingsScreen(Screen):
                 height=dp(75)
             )
 
-            label = Label(
+            label = create_rtl_label(
                 text=reshape_text(label_text),
-                font_name=FONT_NAME,
-                font_size=dp(14),
-                color=(0.2, 0.2, 0.3, 1),
-                halign='right',
-                size_hint_y=None,
-                height=dp(25)
+                font_size=dp(14)
             )
+            label.color = (0.2, 0.2, 0.3, 1)
+            label.size_hint_y = None
+            label.height = dp(25)
             field_layout.add_widget(label)
 
-            input_field = TextInput(
-                text=value,
-                font_name=FONT_NAME,
-                multiline=False,
+            input_field = create_rtl_input(
+                hint_text=reshape_text(label_text),
                 font_size=dp(15),
-                size_hint_y=None,
-                height=dp(50),
-                halign='right',
-                background_color=(1, 1, 1, 1),
-                foreground_color=(0.1, 0.1, 0.1, 1)
+                height=dp(50)
             )
+            input_field.text = value
             field_layout.add_widget(input_field)
 
             self.setting_inputs[key] = input_field
@@ -191,16 +185,14 @@ class SettingsScreen(Screen):
         )
         content.bind(minimum_height=content.setter('height'))
 
-        create_title = Label(
+        create_title = create_rtl_label(
             text=reshape_text('ایجاد کاربر جدید'),
-            font_name=FONT_NAME,
             font_size=dp(16),
-            bold=True,
-            color=(0.1, 0.2, 0.4, 1),
-            halign='right',
-            size_hint_y=None,
-            height=dp(30)
+            bold=True
         )
+        create_title.color = (0.1, 0.2, 0.4, 1)
+        create_title.size_hint_y = None
+        create_title.height = dp(30)
         content.add_widget(create_title)
 
         self.user_inputs = {}
@@ -219,28 +211,20 @@ class SettingsScreen(Screen):
                 height=dp(75)
             )
 
-            label = Label(
+            label = create_rtl_label(
                 text=reshape_text(label_text),
-                font_name=FONT_NAME,
-                font_size=dp(14),
-                color=(0.2, 0.2, 0.3, 1),
-                halign='right',
-                size_hint_y=None,
-                height=dp(25)
+                font_size=dp(14)
             )
+            label.color = (0.2, 0.2, 0.3, 1)
+            label.size_hint_y = None
+            label.height = dp(25)
             field_layout.add_widget(label)
 
-            input_field = TextInput(
+            input_field = create_rtl_input(
                 hint_text=reshape_text(label_text),
-                font_name=FONT_NAME,
-                multiline=False,
                 password=(key == 'password'),
                 font_size=dp(15),
-                size_hint_y=None,
-                height=dp(50),
-                halign='right',
-                background_color=(1, 1, 1, 1),
-                foreground_color=(0.1, 0.1, 0.1, 1)
+                height=dp(50)
             )
             field_layout.add_widget(input_field)
 
@@ -259,16 +243,14 @@ class SettingsScreen(Screen):
         create_button.bind(on_press=self.create_user)
         content.add_widget(create_button)
 
-        users_title = Label(
+        users_title = create_rtl_label(
             text=reshape_text('کاربران موجود'),
-            font_name=FONT_NAME,
             font_size=dp(16),
-            bold=True,
-            color=(0.1, 0.2, 0.4, 1),
-            halign='right',
-            size_hint_y=None,
-            height=dp(30)
+            bold=True
         )
+        users_title.color = (0.1, 0.2, 0.4, 1)
+        users_title.size_hint_y = None
+        users_title.height = dp(30)
         content.add_widget(users_title)
 
         users = get_all_users()

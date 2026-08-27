@@ -2,7 +2,6 @@ from kivy.app import App
 from kivy.uix.screenmanager import ScreenManager
 from kivy.core.window import Window
 from kivy.core.text import LabelBase
-from kivy.metrics import dp
 import os
 
 from database.database import init_db, create_default_data
@@ -17,29 +16,28 @@ from screens.accounting import AccountingScreen
 from screens.personal_accounting import PersonalAccountingScreen
 from screens.settings import SettingsScreen
 from screens.reports import ReportsScreen
+from screens.notes import NotesScreen
+
 
 def register_font():
+    """ثبت فونت فارسی"""
     font_candidates = [
-        (r"C:\Windows\Fonts\BNAZANIN.TTF", "B Nazanin"),
-        (r"C:\Windows\Fonts\BNAZANNB.TTF", "B Nazanin Bold"),
-        (r"C:\Windows\Fonts\tahoma.ttf", "Tahoma"),
-        (r"C:\Windows\Fonts\arial.ttf", "Arial"),
-        (r"C:\Windows\Fonts\times.ttf", "Times New Roman"),
+        os.path.join(os.path.dirname(__file__), 'assets', 'fonts', 'Vazir.ttf'),
+        r"C:\Windows\Fonts\tahoma.ttf",
+        r"C:\Windows\Fonts\arial.ttf",
     ]
 
     font_path = None
-    font_name = ""
-    for path, name in font_candidates:
-        if os.path.exists(path):
-            font_path = path
-            font_name = name
+    for font in font_candidates:
+        if os.path.exists(font) and os.path.getsize(font) > 50000:
+            font_path = font
             break
 
     if not font_path:
         print("هیچ فونتی پیدا نشد")
         return False
 
-    print(f"فونت پیدا شد: {font_name} - {font_path}")
+    print(f"فونت پیدا شد: {font_path}")
 
     try:
         LabelBase.register(name="Persian", fn_regular=font_path)
@@ -50,14 +48,17 @@ def register_font():
         print(f"خطا در ثبت فونت: {str(e)}")
         return False
 
+
 class SafiERPApp(App):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.title = "مدیریت تولید صافی"
+        self.title = "Safi ERP"
 
     def build(self):
-        Window.clearcolor = (0.95, 0.95, 0.95, 1)
+        Window.clearcolor = (0.93, 0.95, 0.98, 1)
+
         sm = ScreenManager()
+
         sm.add_widget(LoginScreen(name="login"))
         sm.add_widget(DashboardScreen(name="dashboard"))
         sm.add_widget(CalculatorScreen(name="calculator"))
@@ -69,7 +70,10 @@ class SafiERPApp(App):
         sm.add_widget(PersonalAccountingScreen(name="personal_accounting"))
         sm.add_widget(SettingsScreen(name="settings"))
         sm.add_widget(ReportsScreen(name="reports"))
+        sm.add_widget(NotesScreen(name="notes"))
+
         return sm
+
 
 if __name__ == "__main__":
     register_font()

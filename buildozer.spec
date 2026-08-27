@@ -12,7 +12,6 @@ android.permissions = INTERNET
 android.api = 34
 android.minapi = 21
 android.archs = arm64-v8a
-android.sdk_path = /usr/local/lib/android/sdk
 
 [buildozer]
 log_level = 2
